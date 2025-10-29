@@ -10,10 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write # The OIDC ID token is used for authentication with JSR.
+      id-token: write
+
+    # Skip publishing for forks
+    if: github.repository_owner == 'reububble'
+
     steps:
       - uses: actions/checkout@v4
-      - uses: denoland/setup-deno@v2
+      - name: Install Deno
+        uses: denoland/setup-deno@v2
         with:
-          deno-version: v2.x
-      - run: deno publish
+          cache: true
+
+      - name: Publish
+        run: deno publish
