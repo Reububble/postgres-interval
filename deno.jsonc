@@ -1,0 +1,9 @@
+{
+  "name": "@reububble/postgres-interval-parser",
+  "version": "0.1.5",
+  "license": "MIT",
+  "exports": "./mod.ts",
+  "fmt": {
+    "lineWidth": 160
+  }
+}
