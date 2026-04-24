@@ -5,7 +5,7 @@ This has better or at least comparable performance to raw JS
 ## Usage
 
 ```ts
-import { type Interval, parse } from "jsr:@reububble/postgres-interval-parser@0.2.0";
+import { type Interval, parse } from "jsr:@reububble/postgres-interval-parser";
 
 const interval: Interval = parse("-1 years -2 mons -3 days -04:05:06.123456");
 /**
