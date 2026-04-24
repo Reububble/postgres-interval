@@ -1,36 +1,58 @@
-import { mem } from "./memory.ts";
-import { day, hour, microsecond, minute, month, parse, second, year } from "./parser.wasm";
+import { memory, parse } from "./parser.wasm";
 
-/**
- * Component-wise representation of an interval
- */
-export interface Interval {
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
-  second: number;
-  microsecond: number;
+export type Interval = {
+  years: number;
+  months: number;
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  microseconds: number;
+};
+
+const result: Interval = {
+  years: 0,
+  months: 0,
+  days: 0,
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+  microseconds: 0,
+};
+
+let buffer = memory.buffer;
+let inputView = new Uint8Array(buffer, 28);
+let outputView = new Int32Array(buffer, 0, 7);
+
+function refreshViews(): void {
+  if (buffer !== memory.buffer) {
+    buffer = memory.buffer;
+    inputView = new Uint8Array(buffer, 28);
+    outputView = new Int32Array(buffer, 0, 7);
+  }
 }
 
-const u32 = new Uint32Array(mem.buffer);
+function ensureCapacity(byteLength: number): void {
+  const required = byteLength + 28;
+  while (memory.buffer.byteLength < required) {
+    memory.grow(1);
+  }
+  refreshViews();
+}
 
-/**
- * Parses the provided string and returns a new Interval
- */
 export function parser(str: string): Interval {
-  for (let i = 0; i < str.length; ++i) u32[i] = str.charCodeAt(i);
-  u32[str.length] = 0;
-  u32[str.length + 1] = 0;
-  parse();
-  return {
-    year: (year as unknown as WebAssembly.Global).value,
-    month: (month as unknown as WebAssembly.Global).value,
-    day: (day as unknown as WebAssembly.Global).value,
-    hour: (hour as unknown as WebAssembly.Global).value,
-    minute: (minute as unknown as WebAssembly.Global).value,
-    second: (second as unknown as WebAssembly.Global).value,
-    microsecond: (microsecond as unknown as WebAssembly.Global).value,
-  };
+  const len = str.length;
+  ensureCapacity(len);
+  for (let i = 0; i < len; i++) {
+    inputView[i] = str.charCodeAt(i);
+  }
+  parse(len);
+  result.years = outputView[0];
+  result.months = outputView[1];
+  result.days = outputView[2];
+  result.hours = outputView[3];
+  result.minutes = outputView[4];
+  result.seconds = outputView[5];
+  result.microseconds = outputView[6];
+  return result;
 }
