@@ -1,18 +1,24 @@
 import { memory, parse } from "./parser.wasm";
 
-export type Interval = {
-  years: number;
-  months: number;
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-  microseconds: number;
-};
-
 /**
  * An interval of time
  */
+export type Interval = {
+  /** Number of years in this interval */
+  years: number;
+  /** Number of months in this interval */
+  months: number;
+  /** Number of days in this interval */
+  days: number;
+  /** Number of hours in this interval */
+  hours: number;
+  /** Number of minutes in this interval */
+  minutes: number;
+  /** Number of seconds in this interval */
+  seconds: number;
+  /** Number of microseconds in this interval */
+  microseconds: number;
+};
 const result: Interval = {
   years: 0,
   months: 0,
