@@ -10,6 +10,9 @@ export type Interval = {
   microseconds: number;
 };
 
+/**
+ * An interval of time
+ */
 const result: Interval = {
   years: 0,
   months: 0,
@@ -40,11 +43,16 @@ function ensureCapacity(byteLength: number): void {
   refreshViews();
 }
 
-export function parser(str: string): Interval {
-  const len = str.length;
+/**
+ * Parse the postgres style interval output into an Interval object
+ * @param intervalStr postgres style interval output string
+ * @returns an Interval object representing the string
+ */
+export function parser(intervalStr: string): Interval {
+  const len = intervalStr.length;
   ensureCapacity(len);
   for (let i = 0; i < len; i++) {
-    inputView[i] = str.charCodeAt(i);
+    inputView[i] = intervalStr.charCodeAt(i);
   }
   parse(len);
   result.years = outputView[0];
